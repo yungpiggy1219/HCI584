@@ -13,7 +13,8 @@ This app will help users quickly know more about the job and its match to the us
 ### Workflow
 I imagined this app being a website with a dashboard, showing daily new jobs, and flag any reposts, or job posts that weren’t actually hiring. The user can search for position name or certain skill to find the job. The dashboard will show list of job posts, it’s sources, and an overview of the trend.
 
-### Resources Used in this Project
+### Resources (to be) Used in this Project
+[Matplotlib Chart] (https://www.geeksforgeeks.org/how-to-embed-matplotlib-charts-in-tkinter-gui/)
 
 
 ### Revised Project Spec

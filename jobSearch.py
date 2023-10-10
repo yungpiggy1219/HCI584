@@ -1,6 +1,8 @@
 import tkinter as tk
 import pandas as pd
 from rapidfuzz import fuzz, process
+import requests
+from bs4 import BeautifulSoup
 
 class jobSearch_app(tk.Tk):
     def __init__(self):
