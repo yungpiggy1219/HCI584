@@ -12,3 +12,10 @@ This app will help users quickly know more about the job and its match to the us
 
 ### Workflow
 I imagined this app being a website with a dashboard, showing daily new jobs, and flag any reposts, or job posts that weren’t actually hiring. The user can search for position name or certain skill to find the job. The dashboard will show list of job posts, it’s sources, and an overview of the trend.
+
+### Resources Used in this Project
+
+
+### Revised Project Spec
+The project will now be a insight tool where it will show the number of jobs from day to day. It will calculate number of jobs in each states. The original plan allows the user to input to search for the job title. I'm now changing it so it will only scrap UX related jobs, and possibly some developer jobs as well. 
+
