@@ -20,5 +20,7 @@ I imagined this app being a dashboard, showing daily new jobs, and flag any repo
 ### Revised Project Spec
 - The original plan was more customizable. The project will now be a insight tool where it will show the number of jobs from day to day. It will calculate number of jobs in each states. The original plan allows the user to input to search for the job title. I'm now changing it so it will only scrap UX related jobs, and possibly some developer jobs as well.
 
+
+### Version 2 progress report A
 - The original plan was to scrape from multiple job boards, Indeed, Linkedin, and Zip Recruiter. Zip Recruiter has questionable  job posts were when I searched on Indeed, it told me there are around 6000 jobs related to UX in the United States and 3000 on Linkedin, however, Zip Recruiter got about 200,000 results, which I found the number unreliable. So in this project, I will exclude Zip Recruiter from the scraping. In the other hand, although Indeed has the most job posts, Indeed is pretty strict about scraping and blocks almost every times I tries to scrape, so I might be making it lower priority. The only problem with Linkedin is that the scraping stops at around 50 results.
 
