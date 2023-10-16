@@ -42,7 +42,7 @@ class jobSearch_app(tk.Tk):
         self.text_widget = tk.Text(self, height=15, wrap="word") 
         self.text_widget.grid(row=3, column=0, columnspan=5, padx=10, pady=10)
 
-        self.df = pd.read_csv('books.csv')   #  read the csv file into a data frame
+        self.df = pd.read_csv('jobs.csv')   #  read the csv file into a data frame
 
     def start_search(self):
         search_text = self.entry.get()
