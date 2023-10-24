@@ -8,7 +8,7 @@ print("Scraping UX jobs from Linkedin...")
 LIuxJobs = scrape_jobs(
     site_name=["linkedin"],
     search_term="ux",
-    location="HI",
+    location="60640",
     results_wanted="1000",
     # location='USA',
     # country_indeed='USA'  # only needed for indeed
@@ -17,7 +17,7 @@ print(f"Found {len(LIuxJobs)} UX jobs on Linkedin")
 
 # Check if file exists
 if not os.path.isfile("jobs.csv"):
-    # Create file if doesn't exist
+    # Create file if doesn't exist  
     print("Results saved to a new file jobs.csv")
     LIuxJobs.to_csv("jobs.csv", index=False)
 else:
