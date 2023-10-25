@@ -2,13 +2,13 @@ from jobspy import scrape_jobs
 import pandas as pd 
 import time
 import os.path
-'''
+
 # Scrape UX jobs from from zip_recruiter
 print("Scraping UX jobs from zip_recruiter")
 
 offset = 0
 chunk_size = 50
-num_chunks = 10
+num_chunks = 10  # change this to get more 
 for chunk in range(0, num_chunks):
 
     jobs = scrape_jobs(
@@ -22,7 +22,6 @@ for chunk in range(0, num_chunks):
     )
     print(f"Found {len(jobs)} UX jobs on zip_recruiter in chunk {chunk+1}/{num_chunks}")
     offset += chunk_size
-    time.sleep(1)
 
     # Check if file exists
     if not os.path.isfile("jobs.csv"):
@@ -34,7 +33,7 @@ for chunk in range(0, num_chunks):
         print("Adding results in existing file jobs.csv")
         jobs.to_csv("jobs.csv", mode="a", index=False, header=False)
 
-'''
+
 # Read jobs.csv
 df_state = pd.read_csv("jobs.csv")
 print("Total number of jobs: ",  len(df_state))
