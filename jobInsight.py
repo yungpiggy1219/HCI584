@@ -7,46 +7,48 @@ from bs4 import BeautifulSoup
 class jobSearch_app(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("Job Search")
+        self.title("Job Insight")
 
-        # Create a "Search for:"" Label and place it on the left (column 0)
-        self.label = tk.Label(self, text="Search for:")
-        self.label.grid(row=0, column=0, padx=10, pady=10, sticky="e")
+        self.label = tk.Label(self, text="Insight for UX jobs on Linkedin within the United States")
+        # Create a "Insight for UX jobs on Linkedin" Label and place it on the left (column 0)
+        # self.label = tk.Label(self, text="Insight for UX jobs on Linkedin")
+        self.label.grid(row=0, column=0, padx=10, pady=10, sticky="e") 
 
         # Create an Entry Widget for Job Title with a specific width (e.g., 30 characters)
-        self.entry = tk.Entry(self)
-        self.entry.grid(row=0, column=1, columnspan=4, padx=10, pady=10, sticky="ew")
+        # self.entry = tk.Entry(self)
+        # self.entry.grid(row=0, column=1, columnspan=4, padx=10, pady=10, sticky="ew") 
 
         # Create a "Within" Label and place it on the left (column 0)
-        self.label = tk.Label(self, text="Within")
-        self.label.grid(row=1, column=0, padx=10, pady=10, sticky="e")
+        # self.label = tk.Label(self, text="within: ")
+        # self.label.grid(row=0, column=1, padx=10, pady=10, sticky="e")
 
         # Create an Entry Widget for Radius with a specific width (e.g., 30 characters)
-        self.entry = tk.Entry(self, width=15)
-        self.entry.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
+        # self.entry = tk.Entry(self, width=15)
+        # self.entry.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
 
         # Create a "of" Label and place it on the left (column 0)
-        self.label = tk.Label(self, text="of zipcode")
-        self.label.grid(row=1, column=2, padx=10, pady=10, sticky="e")
+        # self.label = tk.Label(self, text="of zipcode")
+        # self.label.grid(row=1, column=2, padx=10, pady=10, sticky="e")
 
         # Create an Entry Widget for Zipcode with a specific width (e.g., 30 characters)
-        self.entry = tk.Entry(self, width=15)
-        self.entry.grid(row=1, column=3, padx=10, pady=10, sticky="ew")
+        # self.entry = tk.Entry(self, width=15)
+        # self.entry.grid(row=1, column=3, padx=10, pady=10, sticky="ew")
 
         # Create a Search Button and place it on the right (column 2)
-        self.search_button = tk.Button(self, text="Search", command=self.start_search)
-        self.search_button.grid(row=1, column=4, padx=10, pady=10, sticky="ew")
+        self.search_button = tk.Button(self, text="Show Insight", command=self.start_search)
+        self.search_button.grid(row=0, column=2, padx=10, pady=10, sticky="ew")
 
         # Create a Text widget that spans all three columns and is 30 lines tall
         # wrap="word" to wrap on word boundaries only
-        self.text_widget = tk.Text(self, height=15, wrap="word") 
+        self.text_widget = tk.Text(self, height=30, wrap="word") 
         self.text_widget.grid(row=3, column=0, columnspan=5, padx=10, pady=10)
 
         self.df = pd.read_csv('jobs.csv')   #  read the csv file into a data frame
 
     def start_search(self):
-        search_text = self.entry.get()
-        self.search(search_text, search_column="Job Title")
+        # search_text = self.entry.get()
+        search_text = "UX Designer"
+        self.search(search_text, search_column="title")
 
     def search(self, search_term, search_column):
         if search_term != '':
@@ -54,28 +56,31 @@ class jobSearch_app(tk.Tk):
             print(f"Best match for {search_term} is {text} with a score of {match}%")
             self.text_widget.delete("1.0", "end") # Optional: clear the text widget
             
-            # if there is a > 50% match, print the book title, author, and year,
+            # if there is a > 50% match, print the job information,
             if match > 50:
                 row = self.df.iloc[index]# get the row of the best match using the index
-                jobTitle = row['Job Title']     # get the title from the row  
-                Zipcode = row['Zipcode'] # get the zipcode of the job (maybe allow typing in actualy City, State)
-                Radius = "Placeholder"
+                jobTitle = row['title']     # get the title from the row  
+                location = row['location'] # get the location of the job
+                jobType = row['job_type'] # get the job type
+                datePosted = row['date_posted'] # get the date posted
+                # Radius = "Placeholder"
+
 
                 # Present the total number of job found
                 # If no zipcode set
                 self.text_widget.insert("end", f"The total number of {jobTitle} jobs availble today is: ")
 
                 # If zipcode set
-                self.text_widget.insert("end", f"The total number of {jobTitle} jobs in {Zipcode} availble today is: ")
+                # self.text_widget.insert("end", f"The total number of {jobTitle} jobs in {Zipcode} availble today is: ")
 
                 # If zipcode and radius set
-                self.text_widget.insert("end", f"The total number of {jobTitle} jobs {Radius} miles within {Zipcode} availble today is: ")
+                # self.text_widget.insert("end", f"The total number of {jobTitle} jobs {Radius} miles within {Zipcode} availble today is: ")
 
                 # Compare the number today to prvious days
                 # If higher
-                self.text_widget.insert("end", f"It is {jobTitle} more than yesterday.")
+                # self.text_widget.insert("end", f"It is {jobTitle} more than yesterday.")
                 # If lower
-                self.text_widget.insert("end", f"It is {jobTitle} less than yesterday. ")
+                # self.text_widget.insert("end", f"It is {jobTitle} less than yesterday. ")
 
                 # Add chart of change in daily number of jobs available.
 
