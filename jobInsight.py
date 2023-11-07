@@ -6,8 +6,6 @@ from pandastable import Table, TableModel, config
 
 LARGEFONT =("Verdana", 35)
 
-
-
 class jobSearch_app(tk.Tk):
 
 # __init__ function for class tkinterApp 
@@ -15,6 +13,7 @@ class jobSearch_app(tk.Tk):
 
         # __init__ function for class Tk
         tk.Tk.__init__(self, *args, **kwargs)
+        self.title("Job Insight")
 
         # Container
         container = tk.Frame(self)  
@@ -23,31 +22,19 @@ class jobSearch_app(tk.Tk):
         container.grid_rowconfigure(0, weight = 1)
         container.grid_columnconfigure(0, weight = 1)
 
-        # initializing frames to an empty array
+        # Initializing frames
         self.frames = {}  
-
-        # iterating through a tuple consisting
-        # of the different page layouts
+        
         for F in (Dashboard, Insight, AllJobs):
-
             frame = F(container, self)
-
-            # initializing frame of that object from
-            # startpage, page1, page2 respectively with 
-            # for loop
             self.frames[F] = frame 
-
             frame.grid(row = 0, column = 0, sticky ="nsew")
-
         self.show_frame(Dashboard)
 
-    # to display the current frame passed as
-    # parameter
+    # Display Current Frame
     def show_frame(self, cont):
         frame = self.frames[cont]
         frame.tkraise()
-
-
 
     # def __init__(self):
     #     super().__init__()
@@ -196,26 +183,28 @@ class Insight(tk.Frame):
         label.grid(row = 0, column = 4, padx = 10, pady = 10)
 
         # Dashboard Button
-        button1 = ttk.Button(self, text ="Dashboard",
+        dashboardBtn = ttk.Button(self, text ="Dashboard",
                             command = lambda : controller.show_frame(Dashboard))
-        button1.grid(row = 1, column = 1, padx = 10, pady = 10)
+        dashboardBtn.grid(row = 1, column = 0, padx = 10, pady = 10)
 
         # Insight Button
-        button2 = ttk.Button(self, text ="Insight",
+        insightBtn = ttk.Button(self, text ="Insight",
                             command = lambda : controller.show_frame(Insight))
-        button2.grid(row = 2, column = 1, padx = 10, pady = 10)
+        insightBtn.grid(row = 2, column = 0, padx = 10, pady = 10)
 
-        # Full Table Button
-        button2 = ttk.Button(self, text ="Full Table",
+        # All Jobs Button
+        AllJobsBtn = ttk.Button(self, text ="Full Table",
                             command = lambda : controller.show_frame(AllJobs))
-        button2.grid(row = 2, column = 1, padx = 10, pady = 10)
+        AllJobsBtn.grid(row = 3, column = 0, padx = 10, pady = 10)
 
 # All Jobs Frame
 class AllJobs(tk.Frame):
     def __init__(self, parent, controller): 
         tk.Frame.__init__(self, parent)
+        
+        # Pandas Table
         pt = Table(self)
-        pt.grid(row = 3, column = 3, padx = 10, pady = 10)
+        pt.grid(row = 1, column = 3, padx = 10, pady = 10)
         pt.show()
 
         # Full Table Label
@@ -223,19 +212,19 @@ class AllJobs(tk.Frame):
         label.grid(row = 0, column = 4, padx = 10, pady = 10)
 
         # Dashboard Button
-        button1 = ttk.Button(self, text ="Dashboard",
+        dashboardBtn = ttk.Button(self, text ="Dashboard",
                             command = lambda : controller.show_frame(Dashboard))
-        button1.grid(row = 1, column = 1, padx = 10, pady = 10)
+        dashboardBtn.grid(row = 1, column = 0, padx = 10, pady = 10)
 
         # Insight Button
-        button2 = ttk.Button(self, text ="Insight",
+        insightBtn = ttk.Button(self, text ="Insight",
                             command = lambda : controller.show_frame(Insight))
-        button2.grid(row = 2, column = 1, padx = 10, pady = 10)
+        insightBtn.grid(row = 2, column = 0, padx = 10, pady = 10)
 
-        # Full Table Button
-        button2 = ttk.Button(self, text ="Full Table",
+        # All Jobs Button
+        AllJobsBtn = ttk.Button(self, text ="Full Table",
                             command = lambda : controller.show_frame(AllJobs))
-        button2.grid(row = 3, column = 1, padx = 10, pady = 10)
+        AllJobsBtn.grid(row = 3, column = 0, padx = 10, pady = 10)
 
         # Main Content
         
