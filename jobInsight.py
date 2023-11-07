@@ -1,49 +1,102 @@
 import tkinter as tk
+from tkinter import ttk
 import pandas as pd
 from rapidfuzz import fuzz, process
-import requests
-from bs4 import BeautifulSoup
+from pandastable import Table, TableModel, config
+
+LARGEFONT =("Verdana", 35)
+
+
 
 class jobSearch_app(tk.Tk):
-    def __init__(self):
-        super().__init__()
-        self.title("Job Insight")
 
-        self.label = tk.Label(self, text="Insight for UX jobs on Linkedin within the United States")
-        # Create a "Insight for UX jobs on Linkedin" Label and place it on the left (column 0)
-        # self.label = tk.Label(self, text="Insight for UX jobs on Linkedin")
-        self.label.grid(row=0, column=0, padx=10, pady=10, sticky="e") 
+# __init__ function for class tkinterApp 
+    def __init__(self, *args, **kwargs): 
 
-        # Create an Entry Widget for Job Title with a specific width (e.g., 30 characters)
-        # self.entry = tk.Entry(self)
-        # self.entry.grid(row=0, column=1, columnspan=4, padx=10, pady=10, sticky="ew") 
+        # __init__ function for class Tk
+        tk.Tk.__init__(self, *args, **kwargs)
 
-        # Create a "Within" Label and place it on the left (column 0)
-        # self.label = tk.Label(self, text="within: ")
-        # self.label.grid(row=0, column=1, padx=10, pady=10, sticky="e")
+        # Container
+        container = tk.Frame(self)  
+        container.pack(side = "top", fill = "both", expand = True) 
 
-        # Create an Entry Widget for Radius with a specific width (e.g., 30 characters)
-        # self.entry = tk.Entry(self, width=15)
-        # self.entry.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
+        container.grid_rowconfigure(0, weight = 1)
+        container.grid_columnconfigure(0, weight = 1)
 
-        # Create a "of" Label and place it on the left (column 0)
-        # self.label = tk.Label(self, text="of zipcode")
-        # self.label.grid(row=1, column=2, padx=10, pady=10, sticky="e")
+        # initializing frames to an empty array
+        self.frames = {}  
 
-        # Create an Entry Widget for Zipcode with a specific width (e.g., 30 characters)
-        # self.entry = tk.Entry(self, width=15)
-        # self.entry.grid(row=1, column=3, padx=10, pady=10, sticky="ew")
+        # iterating through a tuple consisting
+        # of the different page layouts
+        for F in (Dashboard, Insight, AllJobs):
 
-        # Create a Search Button and place it on the right (column 2)
-        self.search_button = tk.Button(self, text="Show Insight", command=self.start_search)
-        self.search_button.grid(row=0, column=2, padx=10, pady=10, sticky="ew")
+            frame = F(container, self)
 
-        # Create a Text widget that spans all three columns and is 30 lines tall
-        # wrap="word" to wrap on word boundaries only
-        self.text_widget = tk.Text(self, height=30, wrap="word") 
-        self.text_widget.grid(row=3, column=0, columnspan=5, padx=10, pady=10)
+            # initializing frame of that object from
+            # startpage, page1, page2 respectively with 
+            # for loop
+            self.frames[F] = frame 
 
-        self.df = pd.read_csv('jobs.csv')   #  read the csv file into a data frame
+            frame.grid(row = 0, column = 0, sticky ="nsew")
+
+        self.show_frame(Dashboard)
+
+    # to display the current frame passed as
+    # parameter
+    def show_frame(self, cont):
+        frame = self.frames[cont]
+        frame.tkraise()
+
+
+
+    # def __init__(self):
+    #     super().__init__()
+    #     self.title("Job Insight")
+
+    #     # Create a "Insight for UX jobs on Linkedin" Label and place it on the left (column 0)
+    #     self.label = tk.Label(self, text="Insight for: ")
+    #     self.label.grid(row=0, column=0, padx=10, pady=10, sticky="e") 
+
+    #     # Create an Entry Widget for Job Title with a specific width (e.g., 30 characters)
+    #     self.entry = tk.Entry(self)
+    #     self.entry.grid(row=0, column=1, columnspan=4, padx=10, pady=10, sticky="ew") 
+
+    #     # Create a "Within" Label and place it on the left (column 0)
+    #     # self.label = tk.Label(self, text="within: ")
+    #     # self.label.grid(row=0, column=1, padx=10, pady=10, sticky="e")
+
+    #     # Create an Entry Widget for Radius with a specific width (e.g., 30 characters)
+    #     # self.entry = tk.Entry(self, width=15)
+    #     # self.entry.grid(row=1, column=1, padx=10, pady=10, sticky="ew")
+
+    #     # Create a "of" Label and place it on the left (column 0)
+    #     # self.label = tk.Label(self, text="of zipcode")
+    #     # self.label.grid(row=1, column=2, padx=10, pady=10, sticky="e")
+
+    #     # Create an Entry Widget for Zipcode with a specific width (e.g., 30 characters)
+    #     # self.entry = tk.Entry(self, width=15)
+    #     # self.entry.grid(row=1, column=3, padx=10, pady=10, sticky="ew")
+
+    #     # Create a Search Button and place it on the right (column 2)
+    #     self.search_button = tk.Button(self, text="Search", command=self.start_search)
+    #     self.search_button.grid(row=0, column=2, padx=10, pady=10, sticky="ew")
+
+    #     # Create a Text widget that spans all three columns and is 30 lines tall
+    #     # wrap="word" to wrap on word boundaries only
+    #     self.text_widget = tk.Text(self, height=30, wrap="word") 
+    #     self.text_widget.grid(row=3, column=0, columnspan=5, padx=10, pady=10)
+
+    #     self.df = pd.read_csv('jobs.csv')   #  read the csv file into a data frame
+
+    #     keyword = "UI Designer"
+    #     column_name = "title"
+    #     count = 0
+
+    #     for index, row in self.df.iterrows():
+    #         if keyword in row[column_name]:
+    #             print(f"Row {index}: {row[column_name]}")
+    #             count += 1
+    #             print(count)
 
     def start_search(self):
         # search_text = self.entry.get()
@@ -106,8 +159,85 @@ class jobSearch_app(tk.Tk):
     # Plot result (https://www.geeksforgeeks.org/how-to-embed-matplotlib-charts-in-tkinter-gui/)
     def Draw_Graph(self, total_number: list, range: str) -> None:
         return
-    
 
+
+# Dashboard Frame
+class Dashboard(tk.Frame):
+    def __init__(self, parent, controller): 
+        tk.Frame.__init__(self, parent)
+
+        # Dashboard Label
+        label = ttk.Label(self, text ="Dashboard", font = LARGEFONT)
+        label.grid(row = 0, column = 1, columnspan=4, padx = 10, pady = 10) 
+
+        # Dashboard Button
+        dashboardBtn = ttk.Button(self, text ="Dashboard",
+                            command = lambda : controller.show_frame(Dashboard))
+        dashboardBtn.grid(row = 1, column = 0, padx = 10, pady = 10)
+
+        # Insight Button
+        insightBtn = ttk.Button(self, text ="Insight",
+                            command = lambda : controller.show_frame(Insight))
+        insightBtn.grid(row = 2, column = 0, padx = 10, pady = 10)
+
+        # All Jobs Button
+        AllJobsBtn = ttk.Button(self, text ="Full Table",
+                            command = lambda : controller.show_frame(AllJobs))
+        AllJobsBtn.grid(row = 3, column = 0, padx = 10, pady = 10)
+
+# Insight Frame
+class Insight(tk.Frame):
+
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+
+        # Insigh Label
+        label = ttk.Label(self, text ="Insight", font = LARGEFONT)
+        label.grid(row = 0, column = 4, padx = 10, pady = 10)
+
+        # Dashboard Button
+        button1 = ttk.Button(self, text ="Dashboard",
+                            command = lambda : controller.show_frame(Dashboard))
+        button1.grid(row = 1, column = 1, padx = 10, pady = 10)
+
+        # Insight Button
+        button2 = ttk.Button(self, text ="Insight",
+                            command = lambda : controller.show_frame(Insight))
+        button2.grid(row = 2, column = 1, padx = 10, pady = 10)
+
+        # Full Table Button
+        button2 = ttk.Button(self, text ="Full Table",
+                            command = lambda : controller.show_frame(AllJobs))
+        button2.grid(row = 2, column = 1, padx = 10, pady = 10)
+
+# All Jobs Frame
+class AllJobs(tk.Frame):
+    def __init__(self, parent, controller): 
+        tk.Frame.__init__(self, parent)
+        pt = Table(self)
+        pt.grid(row = 3, column = 3, padx = 10, pady = 10)
+        pt.show()
+
+        # Full Table Label
+        label = ttk.Label(self, text ="All Jobs", font = LARGEFONT)
+        label.grid(row = 0, column = 4, padx = 10, pady = 10)
+
+        # Dashboard Button
+        button1 = ttk.Button(self, text ="Dashboard",
+                            command = lambda : controller.show_frame(Dashboard))
+        button1.grid(row = 1, column = 1, padx = 10, pady = 10)
+
+        # Insight Button
+        button2 = ttk.Button(self, text ="Insight",
+                            command = lambda : controller.show_frame(Insight))
+        button2.grid(row = 2, column = 1, padx = 10, pady = 10)
+
+        # Full Table Button
+        button2 = ttk.Button(self, text ="Full Table",
+                            command = lambda : controller.show_frame(AllJobs))
+        button2.grid(row = 3, column = 1, padx = 10, pady = 10)
+
+        # Main Content
         
 if __name__ == "__main__":
     app = jobSearch_app()
