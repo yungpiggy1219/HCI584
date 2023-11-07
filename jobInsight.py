@@ -152,11 +152,11 @@ class jobSearch_app(tk.Tk):
 class Dashboard(tk.Frame):
     def __init__(self, parent, controller): 
         tk.Frame.__init__(self, parent)
-
         # Dashboard Label
         label = ttk.Label(self, text ="Dashboard", font = LARGEFONT)
-        label.grid(row = 0, column = 1, columnspan=4, padx = 10, pady = 10) 
-
+        label.grid(row = 0, column = 1, columnspan=4, padx = 10, pady = 10)
+        
+        ### Nav Bar ###
         # Dashboard Button
         dashboardBtn = ttk.Button(self, text ="Dashboard",
                             command = lambda : controller.show_frame(Dashboard))
@@ -168,20 +168,51 @@ class Dashboard(tk.Frame):
         insightBtn.grid(row = 2, column = 0, padx = 10, pady = 10)
 
         # All Jobs Button
-        AllJobsBtn = ttk.Button(self, text ="Full Table",
+        AllJobsBtn = ttk.Button(self, text ="All Jobs",
                             command = lambda : controller.show_frame(AllJobs))
         AllJobsBtn.grid(row = 3, column = 0, padx = 10, pady = 10)
+
+        ### Dashboard Content ###
+
+        # Total Number 
+        label = ttk.Label(self, text ="Total of")
+        label.grid(row = 1, column = 1, columnspan=2)
+
+        label = ttk.Label(self, text ="200", font = LARGEFONT)
+        label.grid(row = 2, column = 1, columnspan=2)
+
+        label = ttk.Label(self, text ="jobs")
+        label.grid(row = 3, column = 1, columnspan=2)
+
+        # Last Updated 
+        label = ttk.Label(self, text ="Last Updated:")
+        label.grid(row = 1, column = 4, columnspan=2)
+
+        label = ttk.Label(self, text ="Nov. 6", font = LARGEFONT)
+        label.grid(row = 2, column = 4, columnspan=2)
+
+        label = ttk.Label(self, text ="2023")
+        label.grid(row = 3, column = 4, columnspan=2)
+
+        # Update Button 
+        update_button = tk.Button(self, text="Update", command="")
+        update_button.grid(row=1, column=6, rowspan=3, sticky="nesw", padx=10)
+
+        # Job Trend Chart
+        chart_frame = tk.Frame(self, background="white", height=7)
+        chart_frame.grid(row=4, column=1, columnspan=6, sticky="nesw", padx=10, pady=10, ipady=50)
 
 # Insight Frame
 class Insight(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-
+        
         # Insigh Label
         label = ttk.Label(self, text ="Insight", font = LARGEFONT)
-        label.grid(row = 0, column = 4, padx = 10, pady = 10)
+        label.grid(row = 0, column = 1, columnspan=4, padx = 10, pady = 10)
 
+        ### Nav Bar ###
         # Dashboard Button
         dashboardBtn = ttk.Button(self, text ="Dashboard",
                             command = lambda : controller.show_frame(Dashboard))
@@ -193,24 +224,22 @@ class Insight(tk.Frame):
         insightBtn.grid(row = 2, column = 0, padx = 10, pady = 10)
 
         # All Jobs Button
-        AllJobsBtn = ttk.Button(self, text ="Full Table",
+        AllJobsBtn = ttk.Button(self, text ="All Jobs",
                             command = lambda : controller.show_frame(AllJobs))
         AllJobsBtn.grid(row = 3, column = 0, padx = 10, pady = 10)
+
+        ### Insiht Content ###
 
 # All Jobs Frame
 class AllJobs(tk.Frame):
     def __init__(self, parent, controller): 
         tk.Frame.__init__(self, parent)
         
-        # Pandas Table
-        pt = Table(self)
-        pt.grid(row = 1, column = 3, padx = 10, pady = 10)
-        pt.show()
-
-        # Full Table Label
+        # All Jobs Label
         label = ttk.Label(self, text ="All Jobs", font = LARGEFONT)
-        label.grid(row = 0, column = 4, padx = 10, pady = 10)
+        label.grid(row = 0, column = 1, columnspan=4, padx = 10, pady = 10) 
 
+        ### Nav Bar ###
         # Dashboard Button
         dashboardBtn = ttk.Button(self, text ="Dashboard",
                             command = lambda : controller.show_frame(Dashboard))
@@ -222,11 +251,16 @@ class AllJobs(tk.Frame):
         insightBtn.grid(row = 2, column = 0, padx = 10, pady = 10)
 
         # All Jobs Button
-        AllJobsBtn = ttk.Button(self, text ="Full Table",
+        AllJobsBtn = ttk.Button(self, text ="All Jobs",
                             command = lambda : controller.show_frame(AllJobs))
         AllJobsBtn.grid(row = 3, column = 0, padx = 10, pady = 10)
 
-        # Main Content
+        ### All Job Content ###
+
+        # Pandas Table
+        pt = Table(self)
+        pt.grid(row = 1, column = 1,columnspan=4, rowspan=4, padx = 10, pady = 10)
+        # pt.show()
         
 if __name__ == "__main__":
     app = jobSearch_app()
