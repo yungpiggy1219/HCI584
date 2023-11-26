@@ -34,6 +34,8 @@ class jobSearch_app(tk.Tk):
         # Initializing frames
         self.frames = {}
 
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
+
         for F in (Dashboard, Insight, AllJobs):
             frame = F(container, self)
             self.frames[F] = frame
@@ -169,8 +171,13 @@ class jobSearch_app(tk.Tk):
         print('Number of jobs after duplicate removed: ', len(DF_RM_DUP))
         DF_RM_DUP.to_csv("jobs.csv", index=False)
 
+    def on_closing(self):
+        self.quit()
+        self.destroy()
 
 # Dashboard Frame
+
+
 class Dashboard(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -246,16 +253,6 @@ class Dashboard(tk.Frame):
                          sticky="nesw", padx=10, pady=10, ipady=50)
         canvas = FigureCanvasTkAgg(fig, master=chart_frame)
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
-
-        # Plot the job trend chart
-
-        plt.plot(job_counts_monthly.index, job_counts_monthly.values)
-        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
-        plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-        plt.xlabel('Month')
-        plt.ylabel('Number of Jobs')
-        plt.show()
-
 # Insight Frame
 
 
