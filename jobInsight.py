@@ -7,6 +7,7 @@ from jobspy import scrape_jobs
 import pandas as pd
 import time
 import os.path
+from jobScrape import JobScraper
 
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
@@ -234,9 +235,10 @@ class Dashboard(tk.Frame):
         label = ttk.Label(self, text=self.max_year)
         label.grid(row=3, column=4, columnspan=2)
 
-        # Update Button
+        # Job Scrape Button
+        self.scraper = JobScraper()
         update_button = tk.Button(
-            self, text="Update", command="self.scrapeJob")
+            self, text="Update", command=self.scraper.scrapeJob)
         update_button.grid(row=1, column=6, rowspan=3, sticky="nesw", padx=10)
 
         # Job Trend Chart
@@ -253,6 +255,7 @@ class Dashboard(tk.Frame):
                          sticky="nesw", padx=10, pady=10, ipady=50)
         canvas = FigureCanvasTkAgg(fig, master=chart_frame)
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
 # Insight Frame
 
 
@@ -311,6 +314,21 @@ class Insight(tk.Frame):
         chart_frame.grid(row=4, column=1, columnspan=6,
                          sticky="nesw", padx=10, pady=10, ipady=50)
 
+        # Read jobs.csv
+        self.df = pd.read_csv("jobs.csv")
+
+        # Select and rename columns
+        self.df = self.df[['title', 'company', 'location', 'job_type', 'date_posted']].rename(
+            columns={'title': 'Job Title', 'company': 'Company', 'location': 'Location', 'job_type': 'Job Type', 'date_posted': 'Date Posted'})
+
+        # Pandas Table
+        table_frame = tk.Frame(self)
+        table_frame.grid(row=1, column=1, columnspan=6,
+                         rowspan=4, sticky="nesw")
+
+        pandasTable = Table(table_frame, dataframe=self.df)
+        pandasTable.show()
+
 # All Jobs Frame
 
 
@@ -340,10 +358,20 @@ class AllJobs(tk.Frame):
 
         ### All Job Content ###
 
+        # Read jobs.csv
+        self.df = pd.read_csv("jobs.csv")
+
+        # Select and rename columns
+        self.df = self.df[['title', 'company', 'location', 'job_type', 'date_posted']].rename(
+            columns={'title': 'Job Title', 'company': 'Company', 'location': 'Location', 'job_type': 'Job Type', 'date_posted': 'Date Posted'})
+
         # Pandas Table
-        pt = Table(self)
-        pt.grid(row=1, column=1, columnspan=4, rowspan=4)
-        # pt.show()
+        table_frame = tk.Frame(self)
+        table_frame.grid(row=1, column=1, columnspan=6,
+                         rowspan=4, sticky="nesw")
+
+        pandasTable = Table(table_frame, dataframe=self.df)
+        pandasTable.show()
 
 
 if __name__ == "__main__":
