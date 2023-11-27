@@ -48,63 +48,8 @@ class jobSearch_app(tk.Tk):
         frame = self.frames[cont]
         frame.tkraise()
 
-    def start_search(self):
-        # search_text = self.entry.get()
-        search_text = "UX Designer"
-        self.search(search_text, search_column="title")
-
-    def search(self, search_term, search_column):
-        if search_term != '':
-            text, index, match = self.fuzzy_find(search_term, search_column)
-            print(
-                f"Best match for {search_term} is {text} with a score of {match}%")
-            # Optional: clear the text widget
-            self.text_widget.delete("1.0", "end")
-
-            # if there is a > 50% match, print the job information,
-            if match > 50:
-                # get the row of the best match using the index
-                row = self.df.iloc[index]
-                jobTitle = row['title']     # get the title from the row
-                location = row['location']  # get the location of the job
-                jobType = row['job_type']  # get the job type
-                datePosted = row['date_posted']  # get the date posted
-                # Radius = "Placeholder"
-
-                # Present the total number of job found
-                # If no zipcode set
-                self.text_widget.insert(
-                    "end", f"The total number of {jobTitle} jobs availble today is: ")
-
-                # If zipcode set
-                # self.text_widget.insert("end", f"The total number of {jobTitle} jobs in {Zipcode} availble today is: ")
-
-                # If zipcode and radius set
-                # self.text_widget.insert("end", f"The total number of {jobTitle} jobs {Radius} miles within {Zipcode} availble today is: ")
-
-                # Compare the number today to prvious days
-                # If higher
-                # self.text_widget.insert("end", f"It is {jobTitle} more than yesterday.")
-                # If lower
-                # self.text_widget.insert("end", f"It is {jobTitle} less than yesterday. ")
-
-                # Add chart of change in daily number of jobs available.
-
-            else:
-                self.text_widget.insert(
-                    "end", f"No match found for {search_term} jobs")
-
-    def fuzzy_find(self, search_term, column_name, n=1):
-        matches = process.extract(
-            search_term, self.df[column_name], scorer=fuzz.token_set_ratio, limit=n)
-        # print("DEBUG", search_term, matches) # DEBUG a list of tuples (text, similarity score, index)
-        text = matches[0][0]  # the text of the best match
-        # the similarity score of the best match (0-100)
-        match_score = matches[0][1]
-        index = matches[0][2]  # the index in the data frame of the best match
-        return text, index, match_score
-
     # Convert City to Zipcode
+
     def City_to_Zipcode(self, search_city: str) -> str:
         return
 
@@ -264,74 +209,152 @@ class Insight(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
+        # Read jobs.csv
+        self.df = pd.read_csv("jobs.csv")
+
         # Insigh Label
-        label = ttk.Label(self, text="Insight", font=LARGEFONT)
-        label.grid(row=0, column=1, columnspan=4, padx=10, pady=10)
+        self.label = ttk.Label(self, text="Insight", font=LARGEFONT)
+        self.label.grid(row=0, column=1, columnspan=4, padx=10, pady=10)
 
         ### Nav Bar ###
         # Dashboard Button
-        dashboardBtn = ttk.Button(self, text="Dashboard",
-                                  command=lambda: controller.show_frame(Dashboard))
-        dashboardBtn.grid(row=1, column=0, padx=10, pady=10)
+        self.dashboardBtn = ttk.Button(self, text="Dashboard",
+                                       command=lambda: controller.show_frame(Dashboard))
+        self.dashboardBtn.grid(row=1, column=0, padx=10, pady=10)
 
         # Insight Button
-        insightBtn = ttk.Button(self, text="Insight",
-                                command=lambda: controller.show_frame(Insight))
-        insightBtn.grid(row=2, column=0, padx=10, pady=10)
+        self.insightBtn = ttk.Button(self, text="Insight",
+                                     command=lambda: controller.show_frame(Insight))
+        self.insightBtn.grid(row=2, column=0, padx=10, pady=10)
 
         # All Jobs Button
-        AllJobsBtn = ttk.Button(self, text="All Jobs",
-                                command=lambda: controller.show_frame(AllJobs))
-        AllJobsBtn.grid(row=3, column=0, padx=10, pady=10)
+        self.AllJobsBtn = ttk.Button(self, text="All Jobs",
+                                     command=lambda: controller.show_frame(AllJobs))
+        self.AllJobsBtn.grid(row=3, column=0, padx=10, pady=10)
 
         ### Insiht Content ###
-        # Total Number
-        label = ttk.Label(self, text="Total of")
-        label.grid(row=1, column=1, columnspan=2)
 
-        label = ttk.Label(self, text="200", font=LARGEFONT)
-        label.grid(row=2, column=1, columnspan=2)
+        # Search Bar
+        self.label = ttk.Label(self, text="Search for a job:")
+        self.label.grid(row=1, column=1, sticky="w")
 
-        label = ttk.Label(self, text="jobs")
-        label.grid(row=3, column=1, columnspan=2)
+        # Input for search
+        self.entry = tk.Entry(self)
+        self.entry.grid(row=1, column=2, columnspan=4, sticky="ew")
 
-        # Last Updated
-        label = ttk.Label(self, text="Last Updated:")
-        label.grid(row=1, column=4, columnspan=2)
+        # # Dropdown Menu
+        # options = ['by Job Title', 'by Location']
+        # dropdown = ttk.Combobox(self, values=options)
+        # dropdown.grid(row=1, column=6)  # Adjust the row and column as needed
+        # dropdown.set('by Job Title')
 
-        label = ttk.Label(self, text="Nov. 6", font=LARGEFONT)
-        label.grid(row=2, column=4, columnspan=2)
+        # Search Button
+        self.search_button = tk.Button(
+            self, text="Search", command=self.start_search)
+        self.search_button.grid(row=1, column=6)
 
-        label = ttk.Label(self, text="2023")
-        label.grid(row=3, column=4, columnspan=2)
-
-        # Update Button
-        update_button = tk.Button(self, text="Update", command="")
-        update_button.grid(row=1, column=6, rowspan=3, sticky="nesw", padx=10)
-
-        # Job Trend Chart
-        chart_frame = tk.Frame(self, background="white", height=7)
-        chart_frame.grid(row=4, column=1, columnspan=6,
-                         sticky="nesw", padx=10, pady=10, ipady=50)
-
-        # Read jobs.csv
-        self.df = pd.read_csv("jobs.csv")
+        # # Total Number
+        self.label = ttk.Label(self, text="")
+        self.label.grid(row=2, column=1, columnspan=2, sticky="w")
 
         # Select and rename columns
         self.df = self.df[['title', 'company', 'location', 'job_type', 'date_posted']].rename(
             columns={'title': 'Job Title', 'company': 'Company', 'location': 'Location', 'job_type': 'Job Type', 'date_posted': 'Date Posted'})
 
         # Pandas Table
-        table_frame = tk.Frame(self)
-        table_frame.grid(row=1, column=1, columnspan=6,
-                         rowspan=4, sticky="nesw")
+        self.table_frame = tk.Frame(self)
+        self.table_frame.grid(row=6, column=1, columnspan=6,
+                              rowspan=4, sticky="nesw")
+        self.pandasTable = Table(self.table_frame, dataframe=self.df)
+        self.pandasTable.show()
 
-        pandasTable = Table(table_frame, dataframe=self.df)
-        pandasTable.show()
+        # Job Trend Chart
+        self.chart_frame = tk.Frame(self, background="white", height=7)
+        self.chart_frame.grid(row=3, column=1, columnspan=6,
+                              sticky="nesw", padx=10, pady=10, ipady=50)
+        # Create the Figure and Axes objects
+        self.fig, self.ax = plt.subplots()
+        self.fig.set_size_inches(5, 2)  # Width, Height
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self.chart_frame)
+        self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+    def start_search(self):
+        search_term = self.entry.get()
+        # self.search(search_text, search_column="title")
+
+        # Update the text
+        self.label['text'] = f"There are a total of {len(self.df)} {search_term} jobs."
+
+        # Update the chart
+        self.df['Date Posted'] = pd.to_datetime(self.df['Date Posted'])
+        job_counts_monthly = self.df.resample('M', on='Date Posted').size()
+
+        # Clear the previous plot
+        self.ax.clear()
+
+        # Plot the new data
+        self.ax.plot(job_counts_monthly.index, job_counts_monthly.values)
+        self.ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %Y'))
+        self.ax.xaxis.set_major_locator(mdates.MonthLocator())
+        self.ax.set_xlabel('Month')
+        self.ax.set_ylabel('Number of jobs')
+
+        # Redraw the canvas
+        self.canvas.draw()
+
+    def search(self, search_term, search_column):
+        if search_term != '':
+            text, index, match = self.fuzzy_find(search_term, search_column)
+            print(
+                f"Best match for {search_term} is {text} with a score of {match}%")
+            # Optional: clear the text widget
+            self.text_widget.delete("1.0", "end")
+
+            # if there is a > 50% match, print the job information,
+            if match > 50:
+                # get the row of the best match using the index
+                row = self.df.iloc[index]
+                jobTitle = row['title']     # get the title from the row
+                location = row['location']  # get the location of the job
+                jobType = row['job_type']  # get the job type
+                datePosted = row['date_posted']  # get the date posted
+                # Radius = "Placeholder"
+
+                # Present the total number of job found
+                # If no zipcode set
+                self.text_widget.insert(
+                    "end", f"The total number of {jobTitle} jobs availble today is: ")
+
+                # If zipcode set
+                # self.text_widget.insert("end", f"The total number of {jobTitle} jobs in {Zipcode} availble today is: ")
+
+                # If zipcode and radius set
+                # self.text_widget.insert("end", f"The total number of {jobTitle} jobs {Radius} miles within {Zipcode} availble today is: ")
+
+                # Compare the number today to prvious days
+                # If higher
+                # self.text_widget.insert("end", f"It is {jobTitle} more than yesterday.")
+                # If lower
+                # self.text_widget.insert("end", f"It is {jobTitle} less than yesterday. ")
+
+                # Add chart of change in daily number of jobs available.
+
+            else:
+                self.text_widget.insert(
+                    "end", f"No match found for {search_term} jobs")
+
+    def fuzzy_find(self, search_term, column_name, n=1):
+        matches = process.extract(
+            search_term, self.df[column_name], scorer=fuzz.token_set_ratio, limit=n)
+        # print("DEBUG", search_term, matches) # DEBUG a list of tuples (text, similarity score, index)
+        text = matches[0][0]  # the text of the best match
+        # the similarity score of the best match (0-100)
+        match_score = matches[0][1]
+        index = matches[0][2]  # the index in the data frame of the best match
+        return text, index, match_score
+
 
 # All Jobs Frame
-
-
 class AllJobs(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
