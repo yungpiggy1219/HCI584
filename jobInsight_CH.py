@@ -61,7 +61,7 @@ class jobSearch_app(tk.Tk):
     def Draw_Graph(self, total_number: list, range: str) -> None:
         return
 
-    def scrapeJob(self):
+    """ def scrapeJob(self):
         print("Scraping UX jobs from Linkedin")
 
         offset = 0
@@ -116,6 +116,7 @@ class jobSearch_app(tk.Tk):
         DF_RM_DUP = df_state.drop_duplicates(keep='first')
         print('Number of jobs after duplicate removed: ', len(DF_RM_DUP))
         DF_RM_DUP.to_csv("jobs.csv", index=False)
+ """
 
     def on_closing(self):
         self.quit()
@@ -164,8 +165,9 @@ class Dashboard(tk.Frame):
         label = ttk.Label(self, text="Total of")
         label.grid(row=1, column=1, columnspan=2)
 
-        label = ttk.Label(self, text=len(self.df), font=LARGEFONT)
-        label.grid(row=2, column=1, columnspan=2)
+        self.total_number_label = ttk.Label(
+            self, text=len(self.df), font=LARGEFONT)
+        self.total_number_label.grid(row=2, column=1, columnspan=2)
 
         label = ttk.Label(self, text="jobs")
         label.grid(row=3, column=1, columnspan=2)
@@ -174,8 +176,9 @@ class Dashboard(tk.Frame):
         label = ttk.Label(self, text="Last Updated:")
         label.grid(row=1, column=4, columnspan=2)
 
-        label = ttk.Label(self, text=self.max_date, font=LARGEFONT)
-        label.grid(row=2, column=4, columnspan=2)
+        self.last_updated_label = ttk.Label(
+            self, text=self.max_date, font=LARGEFONT)
+        self.last_updated_label.grid(row=2, column=4, columnspan=2)
 
         label = ttk.Label(self, text=self.max_year)
         label.grid(row=3, column=4, columnspan=2)
@@ -183,7 +186,7 @@ class Dashboard(tk.Frame):
         # Job Scrape Button
         self.scraper = JobScraper()
         update_button = tk.Button(
-            self, text="Update", command=self.scraper.scrapeJob)
+            self, text="Update", command=self.updateButton)
         update_button.grid(row=1, column=6, rowspan=3, sticky="nesw", padx=10)
 
         # Job Trend Chart
@@ -200,6 +203,19 @@ class Dashboard(tk.Frame):
                          sticky="nesw", padx=10, pady=10, ipady=50)
         canvas = FigureCanvasTkAgg(fig, master=chart_frame)
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+    def update_values(self):
+        # Update the total number
+        total_number = len(self.df)
+        self.total_number_label['text'] = total_number
+
+        # Update the last updated
+        last_updated = self.max_date
+        self.last_updated_label['text'] = last_updated
+
+    def updateButton(self):
+        self.scraper.scrapeJob()
+        self.update_values()
 
 # Insight Frame
 
@@ -301,32 +317,32 @@ class Insight(tk.Frame):
 
         # Redraw the canvas
         self.canvas.draw()
-    
+
     # CH: finds all >50% matching job titles and creates new dataframe
     # You will need to figure out how to update your table with the new dataframe
     # you may also want a button to clear the search and show all jobs again
     def search(self, search_term, search_column):
         if search_term != '':
 
-            max_hits = self.df.shape[0] # the number of rows in the data frame
+            max_hits = self.df.shape[0]  # the number of rows in the data frame
 
-            # Go through all rows and find matches > 50%   
-            matches = process.extract(search_term, self.df[search_column], 
-                                    scorer=fuzz.token_set_ratio, limit=max_hits)
-            
+            # Go through all rows and find matches > 50%
+            matches = process.extract(search_term, self.df[search_column],
+                                      scorer=fuzz.token_set_ratio, limit=max_hits)
+
             index_keep_row_list = []
-            for i,m in enumerate(matches):
-                #text = matches[i][0]  # the text of the best match   
-                match_score = matches[i][1] # the similarity score of the best match (0-100)
+            for i, m in enumerate(matches):
+                # text = matches[i][0]  # the text of the best match
+                # the similarity score of the best match (0-100)
+                match_score = matches[i][1]
                 index = matches[i][2]
 
                 # if there is a > 50% match, keep this row
                 if match_score > 50:
                     index_keep_row_list.append(index)
-                    
-            matched_df = self.df.iloc[index_keep_row_list]
-            print(matched_df)    
 
+            matched_df = self.df.iloc[index_keep_row_list]
+            print(matched_df)
 
         else:
             self.text_widget.insert(

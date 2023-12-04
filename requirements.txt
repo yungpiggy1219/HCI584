@@ -1,0 +1,4 @@
+pandas
+pandastable
+python-jobspy
+rapidfuzz
