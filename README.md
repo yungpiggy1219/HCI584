@@ -38,12 +38,18 @@ To inall the other required packages, please run
 To run the program, you will be running **main.py**
 There are 3 pages to the project:
 
+
 - Dashbaord
   - You will be able to see a job number trend for UX related jobs
   - You can use the "Update" button to scrape new jobs from Linkedin
     - The program will "freeze" until the scraping is completed
+<img width="786" alt="Dashboard Screen" src="https://github.com/yungpiggy1219/Job-Post-Insight-HCI584/assets/43735672/c21d1916-a4fe-45cb-ae7a-42cf3e987dda">
+
 - Insight
   - You can use the search bar to search for keywords such as "UX Designer", "Human Computer Interaction", or etc.
   - After the serarch, the list of job will update, and the trend chart will update as well
+<img width="788" alt="Insight Screen" src="https://github.com/yungpiggy1219/Job-Post-Insight-HCI584/assets/43735672/4d5dfce3-889f-498b-9a94-2bef7a502250">
+  
 - All Jobs
   - In this page, you will be able to see all jobs stored in the csv file.
+<img width="785" alt="All Job Screen" src="https://github.com/yungpiggy1219/Job-Post-Insight-HCI584/assets/43735672/0be64777-a840-417b-8d47-0aeb92dc2c7f">
