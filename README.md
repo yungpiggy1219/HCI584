@@ -17,9 +17,9 @@ I imagined this app being a dashboard, showing daily new jobs, and flag any repo
 
 ## Resources Used in this Project
 
-[JobSpy] (https://github.com/cullenwatson/JobSpy)
+[JobSpy](https://github.com/cullenwatson/JobSpy)
 
-[Matplotlib Chart] (https://www.geeksforgeeks.org/how-to-embed-matplotlib-charts-in-tkinter-gui/)
+[Matplotlib Chart](https://www.geeksforgeeks.org/how-to-embed-matplotlib-charts-in-tkinter-gui/)
 
 ## Revised Project Spec
 
