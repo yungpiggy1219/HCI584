@@ -21,6 +21,8 @@ class JobScraper:
         self.chunk = 0
         self.num_chunks = 3  # change this to get more
 
+        folder_path = "data"
+
         # for chunk in range(0, num_chunks):
         while self.chunk < self.num_chunks:
             try:
@@ -48,18 +50,20 @@ class JobScraper:
                 self.chunk += 1
 
             # Check if file exists
-            if not os.path.isfile("jobs.csv"):
+            if not os.path.isfile(f"{folder_path}/jobs.csv"):
                 # Create file if doesn't exist
-                print("Results saved to a new file jobs.csv")
-                jobs.to_csv("jobs.csv", index=False)
+                print(f"Results saved to a new file {folder_path}/jobs.csv")
+                jobs.to_csv(f"{folder_path}/jobs.csv", index=False)
             else:
                 # Add results to existing file
-                print("Adding results in existing file jobs.csv")
-                jobs.to_csv("jobs.csv", mode="a", index=False, header=False)
+                print(
+                    f"Adding results in existing file {folder_path}/jobs.csv")
+                jobs.to_csv(f"{folder_path}/jobs.csv",
+                            mode="a", index=False, header=False)
             time.sleep(5)
 
         # Read jobs.csv
-        df_state = pd.read_csv("jobs.csv")
+        df_state = pd.read_csv(f"{folder_path}/jobs.csv")
         print("Total number of jobs: ",  len(df_state))
 
         # Find Duplicated rows
@@ -68,4 +72,4 @@ class JobScraper:
 
         DF_RM_DUP = df_state.drop_duplicates(keep='first')
         print('Number of jobs after duplicate removed: ', len(DF_RM_DUP))
-        DF_RM_DUP.to_csv("jobs.csv", index=False)
+        DF_RM_DUP.to_csv(f"{folder_path}/jobs.csv", index=False)

@@ -14,6 +14,7 @@ import matplotlib.dates as mdates
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 LARGEFONT = ("Verdana", 35)
+folder_path = "data"
 
 
 class jobSearch_app(tk.Tk):
@@ -59,9 +60,16 @@ class Dashboard(tk.Frame):
         # Dashboard Label
         label = ttk.Label(self, text="Dashboard", font=LARGEFONT)
         label.grid(row=0, column=1, columnspan=4, padx=10, pady=10)
+        self.scraper = JobScraper()
 
         # Read jobs.csv
-        self.df = pd.read_csv("jobs.csv")
+        if not os.path.isfile(f"{folder_path}/jobs.csv"):
+            # Create file if doesn't exist
+            self.scraper.scrapeJob()
+            self.df = pd.read_csv(f"{folder_path}/jobs.csv")
+        else:
+            # Add results to existing file
+            self.df = pd.read_csv(f"{folder_path}/jobs.csv")
 
         # Read the last updated date
         self.df['date_posted'] = pd.to_datetime(self.df['date_posted'])
@@ -112,7 +120,7 @@ class Dashboard(tk.Frame):
         label.grid(row=3, column=4, columnspan=2)
 
         # Job Scrape Button
-        self.scraper = JobScraper()
+
         update_button = tk.Button(
             self, text="Update", command=self.updateButton)
         update_button.grid(row=1, column=6, rowspan=3, sticky="nesw", padx=10)
@@ -155,7 +163,7 @@ class Insight(tk.Frame):
         tk.Frame.__init__(self, parent)
 
         # Read jobs.csv
-        self.df = pd.read_csv("jobs.csv")
+        self.df = pd.read_csv(f"{folder_path}/jobs.csv")
 
         # Insigh Label
         self.label = ttk.Label(self, text="Insight", font=LARGEFONT)
@@ -186,12 +194,6 @@ class Insight(tk.Frame):
         # Input for search
         self.entry = tk.Entry(self)
         self.entry.grid(row=1, column=2, columnspan=4, sticky="ew")
-
-        # # Dropdown Menu
-        # options = ['by Job Title', 'by Location']
-        # dropdown = ttk.Combobox(self, values=options)
-        # dropdown.grid(row=1, column=6)  # Adjust the row and column as needed
-        # dropdown.set('by Job Title')
 
         # Search Button
         self.search_button = tk.Button(
@@ -333,7 +335,7 @@ class AllJobs(tk.Frame):
         ### All Job Content ###
 
         # Read jobs.csv
-        self.df = pd.read_csv("jobs.csv")
+        self.df = pd.read_csv(f"{folder_path}/jobs.csv")
 
         # Select and rename columns
         self.df = self.df[['title', 'company', 'location', 'job_type', 'date_posted']].rename(
