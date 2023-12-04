@@ -28,13 +28,11 @@ class jobSearch_app(tk.Tk):
         # Container
         container = tk.Frame(self)
         container.pack(side="top", fill="both", expand=True)
-
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
 
         # Initializing frames
         self.frames = {}
-
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
 
         for F in (Dashboard, Insight, AllJobs):
@@ -47,75 +45,6 @@ class jobSearch_app(tk.Tk):
     def show_frame(self, cont):
         frame = self.frames[cont]
         frame.tkraise()
-
-    # Convert City to Zipcode
-
-    def City_to_Zipcode(self, search_city: str) -> str:
-        return
-
-    # Calculate Radius
-    def Calculate_Radius(self, search_radius: int, search_city: str) -> int:
-        return
-
-    # Plot result (https://www.geeksforgeeks.org/how-to-embed-matplotlib-charts-in-tkinter-gui/)
-    def Draw_Graph(self, total_number: list, range: str) -> None:
-        return
-
-    def scrapeJob(self):
-        print("Scraping UX jobs from Linkedin")
-
-        offset = 0
-        chunk_size = 50
-        chunk = 0
-        num_chunks = 3  # change this to get more
-
-        # for chunk in range(0, num_chunks):
-        while chunk < num_chunks:
-            try:
-                print(f"Scraping chunk {chunk+1}...")
-                jobs = scrape_jobs(
-                    # neither linkedin nor indeed worked for me
-                    site_name=["Linkedin"],
-                    search_term="ux",
-                    # location="60640",
-                    results_wanted=chunk_size,
-                    offset=offset,
-                    # location='USA',
-                    # country_indeed='USA'  # only needed for indeed
-                )
-            except:
-                print("End of Search. Scraping Stopped.")
-                break
-
-            else:
-                print(
-                    f"Found {len(jobs)} UX jobs on Linkedin in chunk {chunk+1}")
-                print("offset: ", offset)
-                offset += len(jobs)
-                chunk += 1
-
-            # Check if file exists
-            if not os.path.isfile("jobs.csv"):
-                # Create file if doesn't exist
-                print("Results saved to a new file jobs.csv")
-                jobs.to_csv("jobs.csv", index=False)
-            else:
-                # Add results to existing file
-                print("Adding results in existing file jobs.csv")
-                jobs.to_csv("jobs.csv", mode="a", index=False, header=False)
-            time.sleep(5)
-
-        # Read jobs.csv
-        df_state = pd.read_csv("jobs.csv")
-        print("Total number of jobs: ",  len(df_state))
-
-        # Find Duplicated rows
-        Dup_Rows = df_state[df_state.duplicated()]
-        print("Number of duplicate Rows: ", len(Dup_Rows))
-
-        DF_RM_DUP = df_state.drop_duplicates(keep='first')
-        print('Number of jobs after duplicate removed: ', len(DF_RM_DUP))
-        DF_RM_DUP.to_csv("jobs.csv", index=False)
 
     def on_closing(self):
         self.quit()
@@ -164,8 +93,9 @@ class Dashboard(tk.Frame):
         label = ttk.Label(self, text="Total of")
         label.grid(row=1, column=1, columnspan=2)
 
-        label = ttk.Label(self, text=len(self.df), font=LARGEFONT)
-        label.grid(row=2, column=1, columnspan=2)
+        self.total_number_label = ttk.Label(
+            self, text=len(self.df), font=LARGEFONT)
+        self.total_number_label.grid(row=2, column=1, columnspan=2)
 
         label = ttk.Label(self, text="jobs")
         label.grid(row=3, column=1, columnspan=2)
@@ -174,8 +104,9 @@ class Dashboard(tk.Frame):
         label = ttk.Label(self, text="Last Updated:")
         label.grid(row=1, column=4, columnspan=2)
 
-        label = ttk.Label(self, text=self.max_date, font=LARGEFONT)
-        label.grid(row=2, column=4, columnspan=2)
+        self.last_updated_label = ttk.Label(
+            self, text=self.max_date, font=LARGEFONT)
+        self.last_updated_label.grid(row=2, column=4, columnspan=2)
 
         label = ttk.Label(self, text=self.max_year)
         label.grid(row=3, column=4, columnspan=2)
@@ -183,7 +114,7 @@ class Dashboard(tk.Frame):
         # Job Scrape Button
         self.scraper = JobScraper()
         update_button = tk.Button(
-            self, text="Update", command=self.scraper.scrapeJob)
+            self, text="Update", command=self.updateButton)
         update_button.grid(row=1, column=6, rowspan=3, sticky="nesw", padx=10)
 
         # Job Trend Chart
@@ -200,6 +131,20 @@ class Dashboard(tk.Frame):
                          sticky="nesw", padx=10, pady=10, ipady=50)
         canvas = FigureCanvasTkAgg(fig, master=chart_frame)
         canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
+
+    def update_values(self):
+        # Update the total number
+        total_number = len(self.df)
+        self.total_number_label['text'] = total_number
+
+        # Update the last updated
+        last_updated = self.max_date
+        self.last_updated_label['text'] = self.df['date_posted'].max()
+
+    def updateButton(self):
+        # Scrape jobs from Linkedin
+        self.scraper.scrapeJob()
+        self.update_values()
 
 # Insight Frame
 
@@ -253,20 +198,13 @@ class Insight(tk.Frame):
             self, text="Search", command=self.start_search)
         self.search_button.grid(row=1, column=6)
 
-        # # Total Number
-        self.label = ttk.Label(self, text="")
-        self.label.grid(row=2, column=1, columnspan=2, sticky="w")
+        # Search Result Status
+        self.result_label = ttk.Label(self, text="")
+        self.result_label.grid(row=2, column=1, columnspan=2, sticky="w")
 
         # Select and rename columns
         self.df = self.df[['title', 'company', 'location', 'job_type', 'date_posted']].rename(
             columns={'title': 'Job Title', 'company': 'Company', 'location': 'Location', 'job_type': 'Job Type', 'date_posted': 'Date Posted'})
-
-        # Pandas Table
-        self.table_frame = tk.Frame(self)
-        self.table_frame.grid(row=6, column=1, columnspan=6,
-                              rowspan=4, sticky="nesw")
-        self.pandasTable = Table(self.table_frame, dataframe=self.df)
-        self.pandasTable.show()
 
         # Job Trend Chart
         self.chart_frame = tk.Frame(self, background="white", height=7)
@@ -278,16 +216,24 @@ class Insight(tk.Frame):
         self.canvas = FigureCanvasTkAgg(self.fig, master=self.chart_frame)
         self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
+        # Pandas Table
+        self.table_frame = tk.Frame(self)
+        self.table_frame.grid(row=6, column=1, columnspan=6,
+                              rowspan=4, sticky="nesw")
+        self.pandasTable = Table(self.table_frame, dataframe=self.df)
+        self.pandasTable.show()
+
+    # Start Search Function
     def start_search(self):
         search_term = self.entry.get()
-        # self.search(search_text, search_column="title")
-
-        # Update the text
-        self.label['text'] = f"There are a total of {len(self.df)} {search_term} jobs."
+        search_result = self.search(search_term, search_column="Job Title")
+        print(search_result)
 
         # Update the chart
-        self.df['Date Posted'] = pd.to_datetime(self.df['Date Posted'])
-        job_counts_monthly = self.df.resample('M', on='Date Posted').size()
+        search_result['Date Posted'] = pd.to_datetime(
+            search_result['Date Posted'])
+        job_counts_monthly = search_result.resample(
+            'M', on='Date Posted').size()
 
         # Clear the previous plot
         self.ax.clear()
@@ -302,46 +248,50 @@ class Insight(tk.Frame):
         # Redraw the canvas
         self.canvas.draw()
 
+        # Pandas Table
+        self.pandasTable = Table(self.table_frame, dataframe=search_result)
+        self.pandasTable.show()
+
+    # Perform fuzzy search
     def search(self, search_term, search_column):
         if search_term != '':
-            text, index, match = self.fuzzy_find(search_term, search_column)
-            print(
-                f"Best match for {search_term} is {text} with a score of {match}%")
-            # Optional: clear the text widget
-            self.text_widget.delete("1.0", "end")
 
-            # if there is a > 50% match, print the job information,
-            if match > 50:
-                # get the row of the best match using the index
-                row = self.df.iloc[index]
-                jobTitle = row['title']     # get the title from the row
-                location = row['location']  # get the location of the job
-                jobType = row['job_type']  # get the job type
-                datePosted = row['date_posted']  # get the date posted
-                # Radius = "Placeholder"
+            max_hits = self.df.shape[0]  # the number of rows in the data frame
 
-                # Present the total number of job found
-                # If no zipcode set
-                self.text_widget.insert(
-                    "end", f"The total number of {jobTitle} jobs availble today is: ")
+            # Go through all rows and find matches > 50%
+            matches = process.extract(search_term, self.df[search_column],
+                                      scorer=fuzz.token_set_ratio, limit=max_hits)
 
-                # If zipcode set
-                # self.text_widget.insert("end", f"The total number of {jobTitle} jobs in {Zipcode} availble today is: ")
+            index_keep_row_list = []
+            for i, m in enumerate(matches):
+                # text = matches[i][0]  # the text of the best match
+                # the similarity score of the best match (0-100)
+                match_score = matches[i][1]
+                index = matches[i][2]
 
-                # If zipcode and radius set
-                # self.text_widget.insert("end", f"The total number of {jobTitle} jobs {Radius} miles within {Zipcode} availble today is: ")
+                # if there is a > 50% match, keep this row
+                if match_score > 50:
+                    index_keep_row_list.append(index)
 
-                # Compare the number today to prvious days
-                # If higher
-                # self.text_widget.insert("end", f"It is {jobTitle} more than yesterday.")
-                # If lower
-                # self.text_widget.insert("end", f"It is {jobTitle} less than yesterday. ")
+            matched_df = self.df.iloc[index_keep_row_list]
+        if len(matched_df) > 0:
+            # Update the text
+            self.result_label['text'] = f"There are a total of {len(matched_df)} {search_term} jobs."
+            return matched_df
+        else:
+            # Print No Match Found
+            self.result_label['text'] = f"No match found for {search_term} jobs"
 
-                # Add chart of change in daily number of jobs available.
+            # Clear the previous plot
+            self.ax.clear()
+            self.ax.set_xlabel('Month')
+            self.ax.set_ylabel('Number of jobs')
+            self.canvas.draw()
 
-            else:
-                self.text_widget.insert(
-                    "end", f"No match found for {search_term} jobs")
+            # Update with Empty Pandas Table
+            empty_df = pd.DataFrame()
+            self.pandasTable = Table(self.table_frame, dataframe=empty_df)
+            self.pandasTable.show()
 
     def fuzzy_find(self, search_term, column_name, n=1):
         matches = process.extract(
@@ -353,8 +303,9 @@ class Insight(tk.Frame):
         index = matches[0][2]  # the index in the data frame of the best match
         return text, index, match_score
 
-
 # All Jobs Frame
+
+
 class AllJobs(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
