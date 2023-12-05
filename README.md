@@ -13,7 +13,7 @@ This app will help users quickly know more about the job and its match to the us
 
 ## Workflow
 
-I imagined this app being a dashboard, showing daily new jobs, and flag any reposts, or job posts that weren’t actually hiring. To kepp the scope smaller, this tool will support providing insight for UX related jobs such as UX/UI Designers, UX Researcher, Human Factors Engineers, and any Human-Computer Interaction related jobs. The dashboard will show list of job posts, it’s sources, and an overview of the trend.
+I imagined this app being a dashboard, showing daily new jobs, and flag any reposts, or job posts that weren’t actually hiring. To keep the scope smaller, this tool will support providing insight for UX related jobs such as UX/UI Designers, UX Researcher, Human Factors Engineers, and any Human-Computer Interaction related jobs. The dashboard will show list of job posts, it’s sources, and an overview of the trend.
 
 ## Resources Used in this Project
 
@@ -23,30 +23,33 @@ I imagined this app being a dashboard, showing daily new jobs, and flag any repo
 
 ## Revised Project Spec
 
-- The original plan was more customizable. The project will now be a insight tool where it will show the number of jobs from day to day. It will calculate number of jobs in each states. The original plan allows the user to input to search for the job title. I'm now changing it so it will only scrap UX related jobs, and possibly some developer jobs as well.
+- The original plan was more customizable. The project will now be an Insight tool where it will show the number of jobs from day to day. It will calculate the number of jobs in each state. The original plan allows the user to input to search for the job title. I'm now changing it so it will only scrap UX related jobs, and possibly some developer jobs as well.
 
 ## To Run the Program
 
 ### Requirements
 
 Python 3.10 or 3.11 is required, since JobSpy requires 3.10 or 3.11.
-To inall the other required packages, please run
+To install the other required packages, please run
 
 `pip install -r requirements.txt`
 
 To run the program, you will be running **main.py**
+
+When you run the program for the first time, it will perform an initial scraping. The program canvas will not show until the scraping is complete.
+The scraping status will be updated through terminal.
+
 There are 3 pages to the project:
-
-
-### Dashbaord
+### Dashboard
 - You will be able to see a job number trend for UX related jobs
 - You can use the "Update" button to scrape new jobs from Linkedin
   - The program will "freeze" until the scraping is completed
+  - It will update existing jobs.csv with new results.
 <img width="786" alt="Dashboard Screen" src="https://github.com/yungpiggy1219/Job-Post-Insight-HCI584/assets/43735672/c21d1916-a4fe-45cb-ae7a-42cf3e987dda">
 
 ### Insight
 - You can use the search bar to search for keywords such as "UX Designer", "Human Computer Interaction", or etc.
-- After the serarch, the list of job will update, and the trend chart will update as well
+- After the search, the list of job will update, and the trend chart will update as well
 <img width="788" alt="Insight Screen" src="https://github.com/yungpiggy1219/Job-Post-Insight-HCI584/assets/43735672/4d5dfce3-889f-498b-9a94-2bef7a502250">
   
 ### All Jobs
