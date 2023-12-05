@@ -9,7 +9,7 @@ N/a
 ## User Interaction
 
 The application is divided into three main sections: Dashboard, Insight, and All Jobs.
-The application starts by displaying the Dashboard. Users can navigate to the Insight and All Jobs sections by clicking the corresponding buttons or tabs in the application.
+The application starts by displaying the Dashboard. Users can navigate to the Insight and All Jobs sections by clicking the corresponding buttons or tabs in the application. When running the program for the first time, it will perform an initial scraping. The program canvas will not show until the scraping is complete. The scraping status will be updated through terminal.
 
 ### jobSearch_app
 The `jobSearch_app` is the main application class in a Tkinter-based GUI application. It is a subclass of `tk.Tk`, which is the root window of a Tkinter GUI application. Here's what it does:
@@ -29,13 +29,13 @@ This class is essentially a framework for a multi-frame Tkinter application. It 
 All frames includes a navigation bar with buttons to switch between frames. Each button is associated with a command that calls the `show_frame` method of the `jobSearch_app` class with the appropriate argument (Dashboard, Insight, AllJobs).
 
 ### Dashboard
-The `Dashboard` class represents the dashboard frame in the application. It is a subclass of `tk.Frame`. This is the first screen that users see when they open the application. It displays a trend of job numbers for UX related jobs. 
+The `Dashboard` class represents the dashboard frame in the application. It is a subclass of `tk.Frame`. This is the first screen that users see when they open the application. It displays a trend of job numbers for UX related jobs.
 
 The Dashboard class contains several key components:
 
 - A set of labels to display information to the user.
 - A set of methods to scrape job data from LinkedIn, using JobSpy.
-- An "Update" button that triggers the job scraping process when clicked. The application will be unresponsive until the scraping is completed.
+- An "Update" button that triggers the job scraping process when clicked. The application will be unresponsive until the scraping is completed. It will create a new jobs.csv file if not already exist, or it will append new results if jobs.csv is found.
 - A method to read the scraped job data from the CSV file and updating the labels to display this data.
 - A line graph that shows the number of jobs in each month.
 
@@ -56,7 +56,14 @@ The Insight class contains several key components:
 - A table that shows the search result, using `pandastable`.
 
 The Insight class is responsible for allowing the user to search the job data, displaying the search results.
+#### Before Search
 <img width="788" alt="Insight Screen" src="https://github.com/yungpiggy1219/Job-Post-Insight-HCI584/assets/43735672/4d5dfce3-889f-498b-9a94-2bef7a502250">
+
+#### Search with Results Found
+<img width="789" alt="Screenshot 2023-12-05 at 12 34 55 PM" src="https://github.com/yungpiggy1219/Job-Post-Insight-HCI584/assets/43735672/e538567e-6a9c-4f10-b230-86a9d5cab4cf">
+
+#### Search with No Results Found
+<img width="788" alt="Screenshot 2023-12-05 at 12 36 46 PM" src="https://github.com/yungpiggy1219/Job-Post-Insight-HCI584/assets/43735672/4ca4ffad-df1d-4506-bdba-99c7625ed843">
 
 ### AllJobs Class
 The `AllJobs` class represents the all jobs frame in the application. It is a subclass of `tk.Frame`. This section displays all the jobs stored in the CSV file. Users can view all the job postings that have been scraped from LinkedIn.
