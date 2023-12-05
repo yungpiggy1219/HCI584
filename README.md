@@ -50,8 +50,17 @@ There are 3 pages to the project:
 ### Insight
 - You can use the search bar to search for keywords such as "UX Designer", "Human Computer Interaction", or etc.
 - After the search, the list of job will update, and the trend chart will update as well
+
+#### Before Search
 <img width="788" alt="Insight Screen" src="https://github.com/yungpiggy1219/Job-Post-Insight-HCI584/assets/43735672/4d5dfce3-889f-498b-9a94-2bef7a502250">
-  
+
+#### Search with Results Found
+<img width="789" alt="Screenshot 2023-12-05 at 12 34 55 PM" src="https://github.com/yungpiggy1219/Job-Post-Insight-HCI584/assets/43735672/e538567e-6a9c-4f10-b230-86a9d5cab4cf">
+
+#### Search with No Results Found
+<img width="788" alt="Screenshot 2023-12-05 at 12 36 46 PM" src="https://github.com/yungpiggy1219/Job-Post-Insight-HCI584/assets/43735672/4ca4ffad-df1d-4506-bdba-99c7625ed843">
+
+
 ### All Jobs
 - In this page, you will be able to see all jobs stored in the csv file.
 <img width="785" alt="All Job Screen" src="https://github.com/yungpiggy1219/Job-Post-Insight-HCI584/assets/43735672/0be64777-a840-417b-8d47-0aeb92dc2c7f">
