@@ -165,7 +165,7 @@ class Insight(tk.Frame):
         # Read jobs.csv
         self.df = pd.read_csv(f"{folder_path}/jobs.csv")
 
-        # Insigh Label
+        # Insight Label
         self.label = ttk.Label(self, text="Insight", font=LARGEFONT)
         self.label.grid(row=0, column=1, columnspan=4, padx=10, pady=10)
 
