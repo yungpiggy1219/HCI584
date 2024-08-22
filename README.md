@@ -1,4 +1,4 @@
-# HCI584 - Job Post Insight
+# Job Post Insight
 
 The app will be a job post analyzing tool where it will analyze the current job posts available and give insights. The app will scrape job websites, such as Indeed and Linkedin to find new job opportunities and collect data to keep track of hiring trends. It will analyze the level of experience, key qualifications, salary range, benefit, and number of new posts, repost of a certain job function.
 
